@@ -6,7 +6,7 @@ import random
 from discord import message
 from discord.ext import commands
 
-token = 'ODYyMTMxMzMxNTgwMDM1MTA0.YOT4Xw.adikq527RTOHXUkq6_XUHXaDsF4'
+token = ' '
 
 
 description = '''yes'''
