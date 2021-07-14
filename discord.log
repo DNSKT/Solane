@@ -1,0 +1,3 @@
+2021-07-06 23:06:21,589:WARNING:discord.client: PyNaCl is not installed, voice will NOT be supported
+2021-07-06 23:06:21,606:DEBUG:discord.client: on_message has successfully been registered as an event
+2021-07-06 23:06:21,607:DEBUG:discord.client: on_ready has successfully been registered as an event
