@@ -13,7 +13,7 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-token = 'ODYyMTMxMzMxNTgwMDM1MTA0.YOT4Xw.73Hw8-kN34bQpx8wOPXpnUdmH98'
+token = ''
 
 
 description = '''yes'''
