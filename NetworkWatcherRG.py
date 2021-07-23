@@ -13,8 +13,8 @@ import time
 Authenticate
 Authenticates your credentials and creates a client.
 '''
-subscription_key = "95230f00389c4bab9d4353479ebdebda"
-endpoint = "https://southcentralus.api.cognitive.microsoft.com/"
+subscription_key = ""
+endpoint = ""
 
 
 computervision_client = ComputerVisionClient(endpoint, CognitiveServicesCredentials(subscription_key))
