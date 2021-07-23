@@ -26,7 +26,7 @@ This API call can also extract handwriting style text (not shown).
 '''
 print("===== Read File - remote =====")
 # Get an image with text
-read_image_url = "https://cdn.discordapp.com/attachments/797284011059576872/867230021428314162/levelup.png"
+read_image_url = ""
 
 # Call API with URL and raw response (allows you to get the operation location)
 read_response = computervision_client.read(read_image_url,  raw=True)
