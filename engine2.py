@@ -39,7 +39,6 @@ bot = commands.Bot(command_prefix='!', description=description, intents=intents)
 
 
 
-
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=discord.Game(name="Reading texts!"))
