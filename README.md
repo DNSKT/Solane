@@ -1,3 +1,5 @@
-# python (this bot doesnt have name yet)
+# Solane.
 
 this is my basic bot that includes an AI
+
+# More coming soon...
