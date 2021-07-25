@@ -142,7 +142,7 @@ async def text(ctx, read_image_url: str):
                 #await ctx.send(line.bounding_box)
                 embed = discord.Embed(title='Text from image.', description = f''+line.text, color = 0xFF5733)
                # embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-                embed.set_author(name='zAgreed.', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/f835a68e04e7704427280d57c8b94b15.png?size=1024')
+                embed.set_author(name='Solane', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/a432b7691eb218ffe11d54f174d8889c.png?size=1024')
                 embed.add_field(name='Bounding box', value= line.bounding_box, inline=True)
                 embed.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
                 await ctx.send(embed=embed)
