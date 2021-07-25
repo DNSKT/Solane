@@ -1,7 +1,6 @@
 # Solane.
 
 Basic discord bot made in discord.py that includes an AI
-https://img.shields.io/badge/Python-3.x-green
 
 # Setting up:
 
