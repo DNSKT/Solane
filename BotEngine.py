@@ -14,8 +14,8 @@ from discord import message
 from discord.ext import commands
 import logging
 
-subscription_key = "95230f00389c4bab9d4353479ebdebda"
-endpoint = "https://southcentralus.api.cognitive.microsoft.com/"
+subscription_key = ""
+endpoint = ""
 
 
 computervision_client = ComputerVisionClient(endpoint, CognitiveServicesCredentials(subscription_key))
@@ -27,7 +27,7 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-token = 'ODY4NjgwNTEwMTQwOTg5NDUx.YPzLxA.4bwdk9tMfa2-RXryt_lJOXjP3WY'
+token = ''
 
 
 description = '''yes'''
