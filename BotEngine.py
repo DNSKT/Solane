@@ -14,8 +14,8 @@ from discord import message
 from discord.ext import commands
 import logging
 
-subscription_key = ""
-endpoint = ""
+subscription_key = "95230f00389c4bab9d4353479ebdebda"
+endpoint = "https://southcentralus.api.cognitive.microsoft.com/"
 
 
 computervision_client = ComputerVisionClient(endpoint, CognitiveServicesCredentials(subscription_key))
@@ -27,7 +27,7 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-token = ''
+token = 'ODY4NjgwNTEwMTQwOTg5NDUx.YPzLxA.4bwdk9tMfa2-RXryt_lJOXjP3WY'
 
 
 description = '''yes'''
@@ -132,23 +132,16 @@ async def text(ctx, read_image_url: str):
         if read_result.status not in ['notStarted', 'running']:
             break
         time.sleep(1)
-
+        
     if read_result.status == OperationStatusCodes.succeeded:
         for text_result in read_result.analyze_result.read_results:
-            for line in text_result.lines:
-                print(line.text)
-                print(line.bounding_box)
+                textresults = [line.text for line in text_result.lines]
                 #await ctx.send(line.text)
                 #await ctx.send(line.bounding_box)
-                embed = discord.Embed(title='Text from image.', description = f''+line.text, color = 0xFF5733)
+                embed = discord.Embed(title='Text from image.', description = " ".join(textresults), color = 0xFF5733)
                # embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-                embed.set_author(name='Solane', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/a432b7691eb218ffe11d54f174d8889c.png?size=1024')
-                embed.add_field(name='Bounding box', value= line.bounding_box, inline=True)
+                embed.set_author(name='zAgreed.', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/f835a68e04e7704427280d57c8b94b15.png?size=1024')
                 embed.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
                 await ctx.send(embed=embed)
 print()
 bot.run(token)
-
-
-
-
