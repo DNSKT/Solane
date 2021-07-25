@@ -1,11 +1,7 @@
 import requests, uuid, json
 
-# Add your subscription key and endpoint
 subscription_key = ""
 endpoint = ""
-
-# Add your location, also known as region. The default is global.
-# This is required if using a Cognitive Services resource.
 location = ""
 
 path = '/translate'
@@ -25,7 +21,6 @@ headers = {
     'X-ClientTraceId': str(uuid.uuid4())
 }
 
-# You can pass more than one object in body.
 body = [{
     'text': 'es que python es lo mejor'
 }]
