@@ -20,7 +20,7 @@ endpoint_tr = ""
 location = ""
 subscription_key = ""
 endpoint = ""
-path = '/translate'
+path = ''
 
 computervision_client = ComputerVisionClient(endpoint, CognitiveServicesCredentials(subscription_key))
 
@@ -188,22 +188,17 @@ async def imagetr(ctx, lang1: str, lang2:str, read_image_url_tr: str):
         if read_result.status not in ['notStarted', 'running']:
             break
         time.sleep(1)
-    await ctx.send('working?')
+    await ctx.send('Working')
 
     if read_result.status == OperationStatusCodes.succeeded:
         for text_result in read_result.analyze_result.read_results:
             textresults = [line.text for line in text_result.lines]
-            for line in text_result.lines:
-                print(line.text)
-                #print(line.bounding_box)
-                
     
-
-                params = {
-                    'api-version': '3.0',
-                    'from': lang1,
-                    'to': [lang2, 'it']
-                        }
+            params = {
+                'api-version': '3.0',
+                'from': lang1,
+                'to': [lang2,]
+                    }
     constructed_url = endpoint_tr + path
 
     headers = {
@@ -215,18 +210,17 @@ async def imagetr(ctx, lang1: str, lang2:str, read_image_url_tr: str):
 
     # You can pass more than one object in body.
     body = [{
-        'text': line.text
+        'text': " ".join(textresults)
     }]
 
     request = requests.post(constructed_url, params=params, headers=headers, json=body)
     response = request.json()
 
-    print(json.dumps(response, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': ')))
+    # print(json.dumps(response, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': ')))
     #await ctx.send('```'+json.dumps(response, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': '))+'```')
     #await ctx.send(json.dumps(response, sort_keys=False, ensure_ascii=True))
-    tr_results = [json.dumps(response, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': '))]
-    embed = discord.Embed(title='Translate', description = " ".join(tr_results), color = 0xFF5733)
-               # embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+    tr_message = response[0]['translations'][0]['text']
+    embed = discord.Embed(title=f'Translate: {lang1.upper()} to {lang2.upper()}', description =tr_message, color = 0xFF5733)
     embed.set_author(name='Solane', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/a432b7691eb218ffe11d54f174d8889c.png?size=1024')
     embed.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
     await ctx.send(embed=embed)
@@ -235,7 +229,3 @@ async def imagetr(ctx, lang1: str, lang2:str, read_image_url_tr: str):
 
 print()
 bot.run(token)
-
-
-
-
