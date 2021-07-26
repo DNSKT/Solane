@@ -13,10 +13,14 @@ import random
 from discord import message
 from discord.ext import commands
 import logging
+import requests, uuid, json
 
-subscription_key = ""
-endpoint = ""
-
+subscription_key_tr = "e71b25336aa5490d9b9a169740cabe9f"
+endpoint_tr = "https://api.cognitive.microsofttranslator.com/"
+location = "southcentralus"
+subscription_key = "95230f00389c4bab9d4353479ebdebda"
+endpoint = "https://southcentralus.api.cognitive.microsoft.com/"
+path = '/translate'
 
 computervision_client = ComputerVisionClient(endpoint, CognitiveServicesCredentials(subscription_key))
 
@@ -27,7 +31,7 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-token = ''
+token = 'ODYyMTMxMzMxNTgwMDM1MTA0.YOT4Xw.6dMA-oH4YHf4g6i2q-1XSiNXLCE'
 
 
 description = '''yes'''
@@ -35,7 +39,7 @@ description = '''yes'''
 intents = discord.Intents.default()
 intents.members = True
 
-bot = commands.Bot(command_prefix='!', description=description, intents=intents)
+bot = commands.Bot(command_prefix='s!', description=description, intents=intents)
 
 
 
@@ -123,7 +127,6 @@ async def nitro(ctx):
 async def text(ctx, read_image_url: str):
     """Reads the image you sent and sends back the information."""
     read_response = computervision_client.read(read_image_url,  raw=True)
-
     read_operation_location = read_response.headers["Operation-Location"]
     operation_id = read_operation_location.split("/")[-1]
 
@@ -132,16 +135,107 @@ async def text(ctx, read_image_url: str):
         if read_result.status not in ['notStarted', 'running']:
             break
         time.sleep(1)
-        
+
     if read_result.status == OperationStatusCodes.succeeded:
         for text_result in read_result.analyze_result.read_results:
                 textresults = [line.text for line in text_result.lines]
-                #await ctx.send(line.text)
-                #await ctx.send(line.bounding_box)
+               # await ctx.send(line.text)
+               # await ctx.send(line.bounding_box)
                 embed = discord.Embed(title='Text from image.', description = " ".join(textresults), color = 0xFF5733)
                # embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-                embed.set_author(name='zAgreed.', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/f835a68e04e7704427280d57c8b94b15.png?size=1024')
+                embed.set_author(name='Solane', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/a432b7691eb218ffe11d54f174d8889c.png?size=1024')
                 embed.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
                 await ctx.send(embed=embed)
+
+@bot.command()
+async def translate(ctx, lang1: str, lang2: str, text_tr: str):
+    """Translate the text"""
+    params = {
+        'api-version': '3.0',
+        'from': lang1,
+        'to': [lang2, 'en']
+    }
+    constructed_url = endpoint_tr + path
+
+    headers = {
+        'Ocp-Apim-Subscription-Key': subscription_key_tr,
+        'Ocp-Apim-Subscription-Region': location,
+        'Content-type': 'application/json',
+        'X-ClientTraceId': str(uuid.uuid4())
+    }
+
+    # You can pass more than one object in body.
+    body = [{
+        'text': text_tr
+    }]
+
+    request = requests.post(constructed_url, params=params, headers=headers, json=body)
+    response = request.json()
+
+    #print(json.dumps(response, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': ')))
+    await ctx.send('```'+json.dumps(response, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': '))+'```')
+    #await ctx.send(json.dumps(response, sort_keys=False, ensure_ascii=True))
+
+@bot.command()
+async def imagetr(ctx, lang1: str, lang2:str, read_image_url_tr: str):
+    """translates text from images (idk if this will work help)"""
+    read_response = computervision_client.read(read_image_url_tr,  raw=True)
+    read_operation_location = read_response.headers["Operation-Location"]
+    operation_id = read_operation_location.split("/")[-1]
+
+    while True:
+        read_result = computervision_client.get_read_result(operation_id)
+        if read_result.status not in ['notStarted', 'running']:
+            break
+        time.sleep(1)
+    await ctx.send('working?')
+
+    if read_result.status == OperationStatusCodes.succeeded:
+        for text_result in read_result.analyze_result.read_results:
+            textresults = [line.text for line in text_result.lines]
+            for line in text_result.lines:
+                print(line.text)
+                #print(line.bounding_box)
+                
+    
+
+                params = {
+                    'api-version': '3.0',
+                    'from': lang1,
+                    'to': [lang2, 'it']
+                        }
+    constructed_url = endpoint_tr + path
+
+    headers = {
+        'Ocp-Apim-Subscription-Key': subscription_key_tr,
+        'Ocp-Apim-Subscription-Region': location,
+        'Content-type': 'application/json',
+        'X-ClientTraceId': str(uuid.uuid4())
+    }
+
+    # You can pass more than one object in body.
+    body = [{
+        'text': line.text
+    }]
+
+    request = requests.post(constructed_url, params=params, headers=headers, json=body)
+    response = request.json()
+
+    print(json.dumps(response, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': ')))
+    #await ctx.send('```'+json.dumps(response, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': '))+'```')
+    #await ctx.send(json.dumps(response, sort_keys=False, ensure_ascii=True))
+    tr_results = [json.dumps(response, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': '))]
+    embed = discord.Embed(title='Translate', description = " ".join(tr_results), color = 0xFF5733)
+               # embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+    embed.set_author(name='Solane', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/a432b7691eb218ffe11d54f174d8889c.png?size=1024')
+    embed.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
+    await ctx.send(embed=embed)
+
+    
+
 print()
 bot.run(token)
+
+
+
+
