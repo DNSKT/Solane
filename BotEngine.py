@@ -15,11 +15,11 @@ from discord.ext import commands
 import logging
 import requests, uuid, json
 
-subscription_key_tr = "e71b25336aa5490d9b9a169740cabe9f"
-endpoint_tr = "https://api.cognitive.microsofttranslator.com/"
-location = "southcentralus"
-subscription_key = "95230f00389c4bab9d4353479ebdebda"
-endpoint = "https://southcentralus.api.cognitive.microsoft.com/"
+subscription_key_tr = ""
+endpoint_tr = ""
+location = ""
+subscription_key = ""
+endpoint = ""
 path = '/translate'
 
 computervision_client = ComputerVisionClient(endpoint, CognitiveServicesCredentials(subscription_key))
@@ -31,7 +31,7 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-token = 'ODYyMTMxMzMxNTgwMDM1MTA0.YOT4Xw.6dMA-oH4YHf4g6i2q-1XSiNXLCE'
+token = ''
 
 
 description = '''yes'''
