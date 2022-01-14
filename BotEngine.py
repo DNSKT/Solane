@@ -225,7 +225,11 @@ async def imagetr(ctx, lang1: str, lang2:str, read_image_url_tr: str):
     embed.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
     await ctx.send(embed=embed)
 
-    
+    @bot.command()
+    async def yt(ctx):
+    """random youtube link."""
+    code = ''.join(random.choices(string.ascii_letters + string.digits, k=11))
+    await ctx.send(f'https://www.youtube.com/watch?v={code}')
 
 print()
 bot.run(token)
