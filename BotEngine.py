@@ -14,14 +14,26 @@ from discord import message
 from discord.ext import commands
 import logging
 import requests, uuid, json
+import asyncio
+import io
+import glob
+from urllib.parse import urlparse
+from io import BytesIO
+from PIL import Image, ImageDraw
+from azure.cognitiveservices.vision.face import FaceClient
+from msrest.authentication import CognitiveServicesCredentials
+from azure.cognitiveservices.vision.face.models import TrainingStatusType, Person
 
 subscription_key_tr = ""
 endpoint_tr = ""
 location = ""
 subscription_key = ""
 endpoint = ""
-path = ''
+path = '/translate'
+face_key = ""
+face_end = ""
 
+face_client = FaceClient(face_end, CognitiveServicesCredentials(face_key))
 computervision_client = ComputerVisionClient(endpoint, CognitiveServicesCredentials(subscription_key))
 
 
@@ -34,7 +46,7 @@ logger.addHandler(handler)
 token = ''
 
 
-description = '''yes'''
+description = '''Discord bot built in discord.py and made by Skultz.#2059'''
 
 intents = discord.Intents.default()
 intents.members = True
@@ -46,20 +58,20 @@ bot = commands.Bot(command_prefix='s!', description=description, intents=intents
 
 @bot.event
 async def on_ready():
-    await bot.change_presence(activity=discord.Game(name="Reading texts!"))
+    await bot.change_presence(activity=discord.Game(name="Planning to destroy humanity!"))
     print("-----------------------------------------------")
-    print("[!] Iniciando seccion como: ", bot.user.name)
+    print("[!] Starting seccion: ", bot.user.name)
     print("[!] ID: ", bot.user.id)
     print("-----------------------------------------------")
 
-@bot.command()
-async def add(ctx, left: int, right: int):
-    try: 
-        await ctx.send(left + right)
-    except Exception:
-        left = ""
-        await ctx.send("necesitas dar 2 numeros para la suma")
-        return
+#@bot.command()
+#async def add(ctx, left: int, right: int):
+    #try: 
+        #await ctx.send(left + right)
+    #except Exception:
+        #left = ""
+        #await ctx.send("necesitas dar 2 numeros para la suma")
+        #return
 
 @bot.command()
 async def roll(ctx, dice: str):
@@ -164,7 +176,6 @@ async def translate(ctx, lang1: str, lang2: str, text_tr: str):
         'X-ClientTraceId': str(uuid.uuid4())
     }
 
-    # You can pass more than one object in body.
     body = [{
         'text': text_tr
     }]
@@ -208,7 +219,6 @@ async def imagetr(ctx, lang1: str, lang2:str, read_image_url_tr: str):
         'X-ClientTraceId': str(uuid.uuid4())
     }
 
-    # You can pass more than one object in body.
     body = [{
         'text': " ".join(textresults)
     }]
@@ -224,12 +234,96 @@ async def imagetr(ctx, lang1: str, lang2:str, read_image_url_tr: str):
     embed.set_author(name='Solane', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/a432b7691eb218ffe11d54f174d8889c.png?size=1024')
     embed.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
     await ctx.send(embed=embed)
-
-    @bot.command()
-    async def yt(ctx):
+    
+@bot.command()
+async def yt(ctx):
     """random youtube link."""
     code = ''.join(random.choices(string.ascii_letters + string.digits, k=11))
     await ctx.send(f'https://www.youtube.com/watch?v={code}')
 
+
+@bot.command()
+async def detect(ctx, face_link: str):
+    """detects a face from the link"""
+
+    single_face_image_url = face_link
+    single_image_name = os.path.basename(single_face_image_url)
+    detected_faces = face_client.face.detect_with_url(url=single_face_image_url, detection_model='detection_03')
+    if not detected_faces:
+        embed2 = discord.Embed(title=f'No face detect from image: {single_image_name.upper()}',color = 0xFF5733)
+        embed2.set_author(name='Solane', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/a432b7691eb218ffe11d54f174d8889c.png?size=1024')
+        embed2.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
+        await ctx.send(embed=embed2)
+        raise Exception('No face detected from image {}'.format(single_image_name))
+
+    print('Detected face ID from', single_image_name, ':')
+    for face in detected_faces: print (face.face_id)
+    print()
+
+    face_response = face.face_id
+
+    embed = discord.Embed(title=f'Face detected on: {single_image_name.upper()}', description =face_response, color = 0xFF5733)
+    embed.set_author(name='Solane', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/a432b7691eb218ffe11d54f174d8889c.png?size=1024')
+    embed.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
+    await ctx.send(embed=embed)
+    first_image_face_ID = detected_faces[0].face_id
+
+
+@bot.command()
+async def sim(ctx, face_1: str, face_2: str):
+    """finds similitudes on the face of two different pictures."""
+    single_face_image_url = face_1
+    single_image_name = os.path.basename(single_face_image_url)
+    detected_faces = face_client.face.detect_with_url(url=single_face_image_url, detection_model='detection_03')
+    if not detected_faces:
+        raise Exception('No face detected from image {}'.format(single_image_name))
+
+    print('Detected face ID from', single_image_name, ':')
+    for face in detected_faces: print (face.face_id)
+    print()
+
+    first_image_face_ID = detected_faces[0].face_id
+
+    multi_face_image_url = face_2
+    multi_image_name = os.path.basename(multi_face_image_url)
+    detected_faces2 = face_client.face.detect_with_url(url=multi_face_image_url, detection_model='detection_03')
+    second_image_face_IDs = list(map(lambda x: x.face_id, detected_faces2))
+
+    similar_faces = face_client.face.find_similar(face_id=first_image_face_ID, face_ids=second_image_face_IDs)
+    if not similar_faces:
+        print('No similar faces found in', multi_image_name, '.')
+        embed2 = discord.Embed(title=f'No similar faces found in: {single_image_name.upper()} and {multi_image_name.upper()}', description ='No data', color = 0xFF5733)
+        embed2.set_author(name='Solane', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/a432b7691eb218ffe11d54f174d8889c.png?size=1024')
+        embed2.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
+        await ctx.send(embed=embed2)
+
+
+    else:
+        print('Similar faces found in', multi_image_name + ':')
+        for face in similar_faces:
+            first_image_face_ID = face.face_id
+
+            face_info = next(x for x in detected_faces2 if x.face_id == first_image_face_ID)
+            if face_info:
+                print('  Face ID: ', first_image_face_ID)
+                print('  Face rectangle:')
+                print('    Left: ', str(face_info.face_rectangle.left))
+                print('    Top: ', str(face_info.face_rectangle.top))
+                print('    Width: ', str(face_info.face_rectangle.width))
+                print('    Height: ', str(face_info.face_rectangle.height))
+                embed = discord.Embed(title=f'Similar faces found in: {single_image_name.upper()} and {multi_image_name.upper()}', description ='Data', color = 0xFF5733)
+                embed.add_field(name="First face ID:", value=first_image_face_ID, inline=False)
+                embed.add_field(name="Second face ID:", value=second_image_face_IDs, inline=False)
+                embed.add_field(name="Face rectangle:", value="data of the similarities found:", inline=False)
+                embed.add_field(name="Left: ", value=face_info.face_rectangle.left, inline=True)
+                embed.add_field(name="Top: ", value=face_info.face_rectangle.top, inline=True)
+                embed.add_field(name="Width: ", value=face_info.face_rectangle.width, inline=True)
+                embed.add_field(name="Height: ", value=face_info.face_rectangle.height, inline=True)
+                embed.set_author(name='Solane', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/a432b7691eb218ffe11d54f174d8889c.png?size=1024')
+                embed.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
+                await ctx.send(embed=embed)
+
+
+ 
 print()
 bot.run(token)
