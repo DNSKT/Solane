@@ -20,7 +20,6 @@ pip install pillow
 the following list contains all the available commands
 
 ```bash
-  add       
   cool      Says if a user is cool.
   detect    detects a face from the link
   help      Shows this message
@@ -28,6 +27,7 @@ the following list contains all the available commands
   joined    Says when a member joined.
   nitro     Sends random discord nitro gift (most of them doesnt really work ...
   roll      Rolls a dice in NdN format.
+  sim       finds similitudes on the face of two different pictures.
   test      Sends random discord's tags
   text      Reads the image you sent and sends back the information.
   translate Translate the text
