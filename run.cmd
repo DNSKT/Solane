@@ -1,6 +1,7 @@
 @echo off
 COLOR 0A
 
-cd Bot
-call start cmd /k py BotEngine.py
+cd Discord.py
+call start cmd /k python BotEngine.py
 cd ..
+COLOR 0A
