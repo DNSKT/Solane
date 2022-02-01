@@ -19,7 +19,7 @@ pip install pillow
 
 the following list contains all the available commands
 
-```bash
+```
   cool      Says if a user is cool.
   detect    detects a face from the link
   help      Shows this message
