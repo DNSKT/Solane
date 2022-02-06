@@ -16,10 +16,10 @@ from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.face.models import TrainingStatusType, Person
 
 # This key will serve all examples in this document.
-KEY = "650def957dcc45b080ffde1f72b8bac3"
+KEY = ""
 
 # This endpoint will be used in all examples in this quickstart.
-ENDPOINT = "https://facediscord.cognitiveservices.azure.com/"
+ENDPOINT = ""
 
 # Create an authenticated FaceClient.
 face_client = FaceClient(ENDPOINT, CognitiveServicesCredentials(KEY))
