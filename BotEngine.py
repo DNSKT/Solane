@@ -323,7 +323,43 @@ async def sim(ctx, face_1: str, face_2: str):
                 embed.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
                 await ctx.send(embed=embed)
 
-
+@bot.command()
+async def encode(ctx, text: str, shift: int):
+    """encodes a text with a shift"""
+    chars = [
+   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' '
+    ]
+    text = text.upper()
+    encodedText = ''
+    for char in text:
+        charIndex = chars.index(char)
+        newIndex = (charIndex + shift)
+        newIndex = newIndex % len(chars)
+        encodedText += chars[newIndex]
+    #return encodedText
+    embed = discord.Embed(title=f'Encoded text: {text.upper()}', description =encodedText, color = 0xFF5733)
+    embed.set_author(name='Solane', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/a432b7691eb218ffe11d54f174d8889c.png?size=1024')
+    embed.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
+    await ctx.send(embed=embed)
  
+@bot.command()
+async def decode(ctx, text: str, shift: int):
+    """decodes a text with a shift"""
+    chars = [
+   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' '
+    ]
+    text = text.upper()
+    decodedText = ''
+    for char in text:
+        charIndex = chars.index(char)
+        newIndex = (charIndex - shift)
+        newIndex = newIndex % len(chars)
+        decodedText += chars[newIndex]
+    #return decodedText
+    embed = discord.Embed(title=f'Decoded text: {text.upper()}', description =decodedText, color = 0xFF5733)
+    embed.set_author(name='Solane', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/a432b7691eb218ffe11d54f174d8889c.png?size=1024')
+    embed.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
+    await ctx.send(embed=embed)
+
 print()
 bot.run(token)
