@@ -355,7 +355,6 @@ async def decode(ctx, text: str, shift: int):
         newIndex = (charIndex - shift)
         newIndex = newIndex % len(chars)
         decodedText += chars[newIndex]
-    #return decodedText
     embed = discord.Embed(title=f'Decoded text: {text.upper()}', description =decodedText, color = 0xFF5733)
     embed.set_author(name='Solane', icon_url='https://cdn.discordapp.com/avatars/862131331580035104/a432b7691eb218ffe11d54f174d8889c.png?size=1024')
     embed.set_footer(text="Command executed by: {}".format(ctx.author.display_name))
